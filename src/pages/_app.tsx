@@ -31,23 +31,15 @@ const getBaseUrl = () => {
 
 export default withTRPC<AppRouter>({
   config({ ctx }) {
-    /**
-     * If you want to use SSR, you need to use the server's full URL
-     * @link https://trpc.io/docs/ssr
-     */
     const url = `${getBaseUrl()}/api/trpc`;
 
     return {
-      url,
       transformer: superjson,
-      /**
-       * @link https://react-query.tanstack.com/reference/QueryClient
-       */
-      // queryClientConfig: { defaultOptions: { queries: { staleTime: 60 } } },
+      url,
+      headers: {
+        'x-ssr': '1',
+      },
     };
   },
-  /**
-   * @link https://trpc.io/docs/ssr
-   */
-  ssr: false,
+  ssr: true,
 })(MyApp);

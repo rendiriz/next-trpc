@@ -1,4 +1,4 @@
-import NextAuth from 'next-auth';
+import NextAuth from 'next-auth/next';
 import GithubProvider from 'next-auth/providers/github';
 
 // Prisma adapter for NextAuth, optional and can be removed

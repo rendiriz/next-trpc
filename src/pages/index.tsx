@@ -26,7 +26,7 @@ function PokeCard({ id, image, name }: PokeCardProps) {
 }
 
 const HomePage: NextPage = () => {
-  const inputEl = useRef(null);
+  const inputEl = useRef<HTMLInputElement>(null);
   const [rand, setRand] = useState(POKEMON_RANDOM);
 
   const session = trpc.useQuery(['auth.getSession']);
@@ -44,7 +44,7 @@ const HomePage: NextPage = () => {
   const leaveVote = async (e: any) => {
     e.preventDefault();
 
-    console.log(inputEl.current.value);
+    console.log(inputEl.current?.value);
     setRand(POKEMON_RANDOM);
   };
 
