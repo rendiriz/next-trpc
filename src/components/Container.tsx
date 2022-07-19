@@ -99,7 +99,7 @@ export default function Container(props: ContainerProps) {
                 </NextLink>
               )}
               {session.data && (
-                <NextLink href="/api/auth/signout/github">
+                <NextLink href="/">
                   <a
                     className={cn(
                       'font-normal text-gray-600 dark:text-gray-400',

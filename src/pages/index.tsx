@@ -1,4 +1,4 @@
-import React, { Suspense, useRef, useState } from 'react';
+import React, { Suspense } from 'react';
 import type { NextPage } from 'next';
 import Container from '@/components/Container';
 import PokeCard from '@/components/PokeCard';
