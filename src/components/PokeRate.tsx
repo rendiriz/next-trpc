@@ -1,12 +1,14 @@
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import PokeCard from '@/components/PokeCard';
 import { trpc } from '@/utils/trpc';
 import Rate from 'rc-rate';
 import 'rc-rate/assets/index.css';
 
 export default function PokeRate(pokemon: any) {
+  const { data: session } = useSession();
   const [rating, setRating] = useState(pokemon.rate);
-  const session = trpc.useQuery(['auth.getSession']);
+  // const session = trpc.useQuery(['auth.getSession']);
   const mutation = trpc.useMutation(['pokemon.upsert']);
 
   const leaveRate = async (id: number, rate: number) => {
@@ -20,7 +22,7 @@ export default function PokeRate(pokemon: any) {
   return (
     <>
       <PokeCard {...pokemon} />
-      {session.data && (
+      {session && (
         <div className="mt-2 text-3xl">
           <Rate
             className="!text-3xl"

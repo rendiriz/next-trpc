@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import NextLink from 'next/link';
 import { NextSeo } from 'next-seo';
-import { signIn, signOut } from 'next-auth/react';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import cn from 'classnames';
 import MobileMenu from '@/components/MobileMenu';
 import { trpc } from '@/utils/trpc';
@@ -40,12 +40,13 @@ function NavItem({ href, label }: NavItemProps) {
 }
 
 export default function Container(props: ContainerProps) {
+  const { data: session } = useSession();
   const [mounted, setMounted] = useState(false);
   const { resolvedTheme, setTheme } = useTheme();
 
   useEffect(() => setMounted(true), []);
 
-  const session = trpc.useQuery(['auth.getSession']);
+  // const session = trpc.useQuery(['auth.getSession']);
 
   const { children, ...customMeta } = props;
   const router = useRouter();
@@ -79,10 +80,10 @@ export default function Container(props: ContainerProps) {
             <div className="ml-[-0.60rem]">
               <MobileMenu />
               <NavItem href="/" label="Home" />
-              {session.data && <NavItem href="/rate" label="Rate" />}
+              {session && <NavItem href="/rate" label="Rate" />}
             </div>
             <div className="flex items-center">
-              {!session.data && (
+              {!session && (
                 <NextLink href="/api/auth/signin/github">
                   <a
                     className={cn(
@@ -100,7 +101,7 @@ export default function Container(props: ContainerProps) {
                   </a>
                 </NextLink>
               )}
-              {session.data && (
+              {session && (
                 <NextLink href="/">
                   <a
                     className={cn(
