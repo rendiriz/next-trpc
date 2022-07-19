@@ -14,6 +14,8 @@ function PokeCardEmpty() {
 }
 
 const HomePage: NextPage = () => {
+  trpc.useQuery(['auth.getSession']);
+
   const {
     data: pokemons,
     error,
