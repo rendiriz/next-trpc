@@ -14,4 +14,5 @@
 - [tRPC](https://trpc.io/)
 - [Prisma](https://www.prisma.io/)
 - [TailwindCSS](https://tailwindcss.com/)
+- [Railway](https://railway.app/)
 - [PokeAPI](https://pokeapi.co)
