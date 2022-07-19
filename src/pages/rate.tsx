@@ -1,7 +1,7 @@
-import React, { Suspense, useRef, useState } from 'react';
+import React, { Suspense } from 'react';
 import type { NextPage } from 'next';
 import Container from '@/components/Container';
-import PokeCard from '@/components/PokeCard';
+import PokeRate from '@/components/PokeRate';
 import { trpc } from '@/utils/trpc';
 
 function PokeCardEmpty() {
@@ -13,7 +13,7 @@ function PokeCardEmpty() {
   );
 }
 
-const HomePage: NextPage = () => {
+const RatePage: NextPage = () => {
   const {
     data: pokemons,
     error,
@@ -38,7 +38,7 @@ const HomePage: NextPage = () => {
       <Container>
         <div className="flex flex-col justify-center items-center max-w-4xl border-gray-200 dark:border-gray-700 mx-auto pb-48">
           <div className="text-center mt-8">
-            <h1 className="text-4xl">Pokemon</h1>
+            <h1 className="text-4xl">Rate Pokemon</h1>
 
             {status === 'loading' ? (
               <PokeCardEmpty />
@@ -52,7 +52,9 @@ const HomePage: NextPage = () => {
                   {pokemons?.pages.map((group, i) => (
                     <React.Fragment key={i}>
                       {group.items.map((pokemon) => (
-                        <PokeCard key={pokemon.id} {...pokemon} />
+                        <div key={pokemon.id}>
+                          <PokeRate {...pokemon} />
+                        </div>
                       ))}
                     </React.Fragment>
                   ))}
@@ -79,4 +81,4 @@ const HomePage: NextPage = () => {
   );
 };
 
-export default HomePage;
+export default RatePage;

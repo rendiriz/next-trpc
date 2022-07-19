@@ -50,8 +50,8 @@ export default function Container(props: ContainerProps) {
   const { children, ...customMeta } = props;
   const router = useRouter();
   const meta = {
-    title: 'Pokevote',
-    description: 'A voting app for the Pokemon.',
+    title: 'PokeRate',
+    description: 'A simple rating system for Pokemon.',
     type: 'website',
     ...customMeta,
   };
@@ -79,7 +79,7 @@ export default function Container(props: ContainerProps) {
             <div className="ml-[-0.60rem]">
               <MobileMenu />
               <NavItem href="/" label="Home" />
-              <NavItem href="/result" label="Result" />
+              {session.data && <NavItem href="/rate" label="Rate" />}
             </div>
             <div className="flex items-center">
               {!session.data && (
@@ -156,6 +156,13 @@ export default function Container(props: ContainerProps) {
           className="flex flex-col justify-center px-8 bg-gray-50 dark:bg-gray-900"
         >
           {children}
+          <footer className="flex flex-col justify-center items-center max-w-4xl border-gray-200 dark:border-gray-700 mx-auto py-8">
+            <NextLink href="https://github.com/rendiriz/next-trpc" passHref>
+              <a target="_blank" className="hover:underline">
+                Github
+              </a>
+            </NextLink>
+          </footer>
         </main>
       </div>
     </>

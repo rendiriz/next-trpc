@@ -42,13 +42,14 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String        @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?       @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
+  PokemonRate   PokemonRate[]
 }
 
 model VerificationToken {
@@ -57,4 +58,22 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Pokemon {
+  id          Int           @id
+  name        String
+  image       String
+  PokemonRate PokemonRate[]
+}
+
+model PokemonRate {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  pokemonId Int
+  rate      Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pokemon   Pokemon  @relation(fields: [pokemonId], references: [id], onDelete: Cascade)
 }
