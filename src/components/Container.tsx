@@ -6,7 +6,6 @@ import { NextSeo } from 'next-seo';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import cn from 'classnames';
 import MobileMenu from '@/components/MobileMenu';
-import { trpc } from '@/utils/trpc';
 
 type NavItemProps = {
   href: string;
@@ -45,8 +44,6 @@ export default function Container(props: ContainerProps) {
   const { resolvedTheme, setTheme } = useTheme();
 
   useEffect(() => setMounted(true), []);
-
-  // const session = trpc.useQuery(['auth.getSession']);
 
   const { children, ...customMeta } = props;
   const router = useRouter();

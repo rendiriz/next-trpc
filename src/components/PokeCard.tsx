@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import { trpc } from '@/utils/trpc';
 import Rate from 'rc-rate';
 import 'rc-rate/assets/index.css';
 
@@ -14,7 +13,6 @@ type PokeCardProps = {
 
 export default function PokeCard({ id, image, name, rate }: PokeCardProps) {
   const { data: session } = useSession();
-  // const session = trpc.useQuery(['auth.getSession']);
   const router = useRouter();
 
   return (

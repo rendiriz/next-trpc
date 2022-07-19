@@ -8,7 +8,6 @@ import 'rc-rate/assets/index.css';
 export default function PokeRate(pokemon: any) {
   const { data: session } = useSession();
   const [rating, setRating] = useState(pokemon.rate);
-  // const session = trpc.useQuery(['auth.getSession']);
   const mutation = trpc.useMutation(['pokemon.upsert']);
 
   const leaveRate = async (id: number, rate: number) => {
