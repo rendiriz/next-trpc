@@ -1,10 +1,12 @@
 import cn from 'classnames';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import useDelayedRender from 'use-delayed-render';
 import { useState, useEffect } from 'react';
 import styles from '@/styles/mobile-menu.module.css';
 
 export default function MobileMenu() {
+  const { data: session } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { mounted: isMenuMounted, rendered: isMenuRendered } = useDelayedRender(
     isMenuOpen,
@@ -57,14 +59,16 @@ export default function MobileMenu() {
               <a className="flex w-auto pb-4">Home</a>
             </Link>
           </li>
-          <li
-            className="border-b border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold"
-            style={{ transitionDelay: '175ms' }}
-          >
-            <Link href="/result">
-              <a className="flex w-auto pb-4">Result</a>
-            </Link>
-          </li>
+          {session && (
+            <li
+              className="border-b border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold"
+              style={{ transitionDelay: '175ms' }}
+            >
+              <Link href="/rate">
+                <a className="flex w-auto pb-4">Rate</a>
+              </Link>
+            </li>
+          )}
         </ul>
       )}
     </>
