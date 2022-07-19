@@ -91,7 +91,9 @@ export default function Container(props: ContainerProps) {
                     )}
                     onClick={(e) => {
                       e.preventDefault();
-                      signIn('github');
+                      signIn('github', {
+                        callbackUrl: `${window.location.origin}/rate`,
+                      });
                     }}
                   >
                     <span className="capsize">Login</span>
@@ -107,7 +109,9 @@ export default function Container(props: ContainerProps) {
                     )}
                     onClick={(e) => {
                       e.preventDefault();
-                      signOut();
+                      signOut({
+                        callbackUrl: `${window.location.origin}`,
+                      });
                     }}
                   >
                     <span className="capsize">Logout</span>
