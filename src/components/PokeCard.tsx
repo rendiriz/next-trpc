@@ -17,7 +17,7 @@ export default function PokeCard({ id, image, name, rate }: PokeCardProps) {
 
   return (
     <div className="text-center">
-      <div className="mt-6 w-64 h-64 rounded-xl border-2 border-gray-300">
+      <div className="mt-6 w-64 h-64 rounded-xl border-2 border-gray-300 dark:border-gray-600">
         <div className="relative flex items-center justify-center h-full">
           <Image src={image} alt={name} width={160} height={160} />
           {(!session || router.pathname === '/') && (
