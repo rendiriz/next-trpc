@@ -9,7 +9,7 @@ import '../styles/globals.css';
 
 const isProduction = process.env.NEXT_PUBLIC_ENVIRONMENT === 'production';
 
-const MyApp: AppType = ({
+const MyApp: AppType<{ session: any }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
