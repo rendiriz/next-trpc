@@ -35,10 +35,7 @@ export default function Container(props: ContainerProps) {
       />
       <div className="bg-gray-50 dark:bg-gray-900">
         <Nav />
-        <main
-          id="skip"
-          className="flex flex-col justify-center px-8 bg-gray-50 dark:bg-gray-900"
-        >
+        <main id="skip" className="bg-gray-50 dark:bg-gray-900 mt-[72px]">
           {children}
         </main>
         <footer className="flex flex-col justify-center items-center max-w-4xl border-gray-200 dark:border-gray-700 mx-auto py-8">

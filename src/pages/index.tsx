@@ -23,7 +23,7 @@ const HomePage: NextPage = () => {
     status,
   } = trpc.useInfiniteQuery(
     [
-      'pokemon.infinite',
+      'pokemon.list',
       {
         limit: 6,
       },
@@ -36,43 +36,41 @@ const HomePage: NextPage = () => {
   return (
     <Suspense fallback={null}>
       <Container>
-        <div className="flex flex-col justify-center items-center max-w-4xl border-gray-200 dark:border-gray-700 mx-auto pb-48">
-          <div className="text-center mt-8">
-            <h1 className="text-4xl">Pokemon</h1>
+        <div className="border-gray-200 dark:border-gray-700 max-w-4xl mx-auto px-6 pt-12 pb-48">
+          <h1 className="text-4xl text-center">Pokemon</h1>
 
-            {status === 'loading' ? (
-              <PokeCardEmpty />
-            ) : status === 'error' ? (
-              <>
-                <div className="mt-8">Error: {error.message}</div>
-              </>
-            ) : (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-                  {pokemons?.pages.map((group, i) => (
-                    <React.Fragment key={i}>
-                      {group.items.map((pokemon) => (
-                        <PokeCard key={pokemon.id} {...pokemon} />
-                      ))}
-                    </React.Fragment>
-                  ))}
-                </div>
-                <div className="mt-12">
-                  <button
-                    className="mt-4 flex items-center justify-center px-4 py-2 font-medium bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-200 rounded-md w-full"
-                    onClick={() => fetchNextPage()}
-                    disabled={!hasNextPage || isFetchingNextPage}
-                  >
-                    {isFetchingNextPage
-                      ? 'Loading more...'
-                      : hasNextPage
-                      ? 'Load More'
-                      : 'Nothing more to load'}
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
+          {status === 'loading' ? (
+            <PokeCardEmpty />
+          ) : status === 'error' ? (
+            <>
+              <div className="mt-8">Error: {error.message}</div>
+            </>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+                {pokemons?.pages.map((group, i) => (
+                  <React.Fragment key={i}>
+                    {group.items.map((pokemon) => (
+                      <PokeCard key={pokemon.id} {...pokemon} />
+                    ))}
+                  </React.Fragment>
+                ))}
+              </div>
+              <div className="mt-12">
+                <button
+                  className="mt-4 flex items-center justify-center px-4 py-2 font-medium bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-200 rounded-md w-full"
+                  onClick={() => fetchNextPage()}
+                  disabled={!hasNextPage || isFetchingNextPage}
+                >
+                  {isFetchingNextPage
+                    ? 'Loading more...'
+                    : hasNextPage
+                    ? 'Load More'
+                    : 'Nothing more to load'}
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </Container>
     </Suspense>

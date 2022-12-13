@@ -8,6 +8,7 @@ const Pokemon = z.object({
   name: z.string(),
   image: z.string(),
   rate: z.number().optional(),
+  vote: z.number().optional(),
 });
 const Pokemons = z.array(Pokemon);
 
@@ -36,7 +37,7 @@ export const pokemonRouter = createRouter()
       };
     },
   })
-  .query('infinite', {
+  .query('list', {
     input: z.object({
       limit: z.number().min(1).max(100).nullish(),
       cursor: z.number().nullish(),
@@ -45,56 +46,34 @@ export const pokemonRouter = createRouter()
       const limit = input.limit ?? 50;
       const { cursor } = input;
 
-      let userId: string = '';
-      let items;
-      if (ctx.session) {
-        userId = (ctx.session.user as any).id;
-        items = await ctx.prisma.$queryRaw<Pokemons>(
-          Prisma.sql`
+      const items = await ctx.prisma.$queryRaw<Pokemons>(
+        Prisma.sql`
+          SELECT 
+            "Table".id,
+            "Table".name,
+            "Table".image,
+            COALESCE("Table"."rate", 0) as rate,
+            COALESCE("Table"."vote", 0) as vote
+          FROM (
             SELECT 
-              "Table".id,
-              "Table".name,
-              "Table".image,
-              COALESCE("Table"."rate", 0) as rate
-            FROM (
-              SELECT 
-                p.*,
-                (
-                  SELECT rate FROM "PokemonRate" AS pr 
-                  WHERE pr."pokemonId" = p."id" 
-                  AND pr."userId" = ${userId}
-                ) as rate
-              FROM "Pokemon" AS p
-              ORDER BY p."id" ASC 
-            ) as "Table"
-            WHERE "Table".id >= ${cursor ? cursor : 0}
-            LIMIT ${limit + 1}
-          `,
-        );
-      } else {
-        items = await ctx.prisma.$queryRaw<Pokemons>(
-          Prisma.sql`
-            SELECT 
-              "Table".id,
-              "Table".name,
-              "Table".image,
-              COALESCE("Table"."rate", 0) as rate
-            FROM (
-              SELECT 
-                p.*,
-                (
-                  SELECT AVG(rate)::FLOAT FROM "PokemonRate" AS pr 
-                  WHERE pr."pokemonId" = p."id" 
-                  GROUP BY pr."pokemonId"
-                ) as rate
-              FROM "Pokemon" AS p
-              ORDER BY p."id" ASC 
-            ) as "Table"
-            WHERE "Table".id >= ${cursor ? cursor : 0}
-            LIMIT ${limit + 1} 
-          `,
-        );
-      }
+              p.*,
+              (
+                SELECT AVG(rate)::FLOAT FROM "PokemonRate" AS pr 
+                WHERE pr."pokemonId" = p."id" 
+                GROUP BY pr."pokemonId"
+              ) as rate,
+              (
+                SELECT COUNT(id) FROM "PokemonRate" AS pr 
+                WHERE pr."pokemonId" = p."id" 
+                GROUP BY pr."pokemonId"
+              ) as vote
+            FROM "Pokemon" AS p
+            ORDER BY p."id" ASC 
+          ) as "Table"
+          WHERE "Table".id >= ${cursor ? cursor : 0}
+          LIMIT ${limit + 1} 
+        `,
+      );
 
       let nextCursor: typeof cursor | null = null;
       if (items.length > limit) {
@@ -112,7 +91,59 @@ export const pokemonRouter = createRouter()
     if (!ctx.session) {
       throw new trpc.TRPCError({ code: 'UNAUTHORIZED' });
     }
+
     return next();
+  })
+  .query('rate', {
+    input: z.object({
+      limit: z.number().min(1).max(100).nullish(),
+      cursor: z.number().nullish(),
+    }),
+    async resolve({ ctx, input }) {
+      const limit = input.limit ?? 50;
+      const { cursor } = input;
+
+      console.log(ctx.session);
+
+      let userId: string = '';
+      if (ctx.session) {
+        userId = (ctx.session.user as any).id;
+      }
+
+      const items = await ctx.prisma.$queryRaw<Pokemons>(
+        Prisma.sql`
+          SELECT 
+            "Table".id,
+            "Table".name,
+            "Table".image,
+            COALESCE("Table"."rate", 0) as rate
+          FROM (
+            SELECT 
+              p.*,
+              (
+                SELECT rate FROM "PokemonRate" AS pr 
+                WHERE pr."pokemonId" = p."id" 
+                AND pr."userId" = ${userId}
+              ) as rate
+            FROM "Pokemon" AS p
+            ORDER BY p."id" ASC 
+          ) as "Table"
+          WHERE "Table".id >= ${cursor ? cursor : 0}
+          LIMIT ${limit + 1}
+        `,
+      );
+
+      let nextCursor: typeof cursor | null = null;
+      if (items.length > limit) {
+        const nextItem = items.pop();
+        nextCursor = nextItem!.id;
+      }
+
+      return {
+        items,
+        nextCursor,
+      };
+    },
   })
   .mutation('upsert', {
     input: z.object({

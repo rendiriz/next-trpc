@@ -19,12 +19,18 @@ const Nav = () => {
     >
       <nav
         className={cn(
-          'bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-50',
-          'mx-auto max-w-4xl px-4',
+          'w-full fixed top-0 z-50',
+          'border-b border-solid border-gray-300 dark:border-gray-600',
         )}
       >
-        <div className="relative flex flex-wrap items-center justify-between py-6">
-          <div className="flex space-x-2 md:space-x-4 items-center">
+        <div
+          className={cn(
+            'mx-auto max-w-4xl px-4',
+            'relative flex flex-wrap items-center justify-between py-2',
+            'bg-gray-50/90 dark:bg-gray-900/90 text-gray-800 dark:text-gray-50',
+          )}
+        >
+          <div className="flex items-center">
             <div className="hidden sm:block">
               <div className="flex space-x-2">
                 <NavItem href="/" text="Home" />
@@ -72,7 +78,7 @@ const Nav = () => {
                     onClick={(e) => {
                       e.preventDefault();
                       signIn('github', {
-                        callbackUrl: `${window.location.origin}/rate`,
+                        callbackUrl: `${window.location.origin}`,
                       });
                     }}
                   >
@@ -107,13 +113,14 @@ const Nav = () => {
       <Collapsible.Content>
         <div
           className={cn(
-            'bg-gray-50 dark:bg-gray-900',
+            'block sm:hidden',
+            'bg-gray-50/90 dark:bg-gray-900/90',
             'border-b border-gray-300 dark:border-gray-600',
-            'absolute z-50 min-w-full mt-[1px]',
+            'w-full fixed top-[66px] z-50 mt-[1px]',
           )}
         >
           <div className="flex flex-col">
-            <div className="space-y-1 pb-4">
+            <div className="space-y-1 py-4">
               <NavItemMobile href="/" text="Home" />
               {session && <NavItemMobile href="/rate" text="Rate" />}
             </div>
