@@ -104,6 +104,7 @@ export const pokemonRouter = createRouter()
       const { cursor } = input;
 
       console.log(ctx.session);
+      console.log((ctx.session?.user as any).id);
 
       let userId: string = '';
       if (ctx.session) {

@@ -16,9 +16,7 @@ function PokeCardEmpty() {
   );
 }
 
-const RatePage: NextPage = ({
-  session,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const RatePage: NextPage = () => {
   const {
     data: pokemons,
     error,
@@ -37,8 +35,6 @@ const RatePage: NextPage = ({
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },
   );
-
-  console.log(session);
 
   return (
     <Suspense fallback={null}>
