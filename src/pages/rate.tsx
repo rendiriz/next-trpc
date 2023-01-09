@@ -1,20 +1,11 @@
 import React, { Suspense } from 'react';
-import { InferGetServerSidePropsType } from 'next';
 import type { NextPage } from 'next';
 import { unstable_getServerSession } from 'next-auth/next';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import Container from '@/components/Container';
 import PokeRate from '@/components/PokeRate';
-import { trpc } from '@/utils/trpc';
-
-function PokeCardEmpty() {
-  return (
-    <div className="animate-pulse flex flex-col items-center justify-center mt-8">
-      <div className="h-[24px] w-[50%] bg-slate-200 rounded"></div>
-      <div className="h-[24px] w-[25%] bg-slate-200 rounded mt-4"></div>
-    </div>
-  );
-}
+import PokeCardEmpty from '@/components/PokeCardEmpty';
+import { api } from '@/utils/api';
 
 const RatePage: NextPage = () => {
   const {
@@ -24,13 +15,10 @@ const RatePage: NextPage = () => {
     hasNextPage,
     isFetchingNextPage,
     status,
-  } = trpc.useInfiniteQuery(
-    [
-      'pokemon.rate',
-      {
-        limit: 6,
-      },
-    ],
+  } = api.pokemon.rate.useInfiniteQuery(
+    {
+      limit: 6,
+    },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },
@@ -82,27 +70,27 @@ const RatePage: NextPage = () => {
   );
 };
 
-export async function getServerSideProps(context: any) {
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authOptions,
-  );
+// export async function getServerSideProps(context: any) {
+//   const session = await unstable_getServerSession(
+//     context.req,
+//     context.res,
+//     authOptions,
+//   );
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    };
-  }
+//   if (!session) {
+//     return {
+//       redirect: {
+//         destination: '/',
+//         permanent: false,
+//       },
+//     };
+//   }
 
-  return {
-    props: {
-      session,
-    },
-  };
-}
+//   return {
+//     props: {
+//       session,
+//     },
+//   };
+// }
 
 export default RatePage;

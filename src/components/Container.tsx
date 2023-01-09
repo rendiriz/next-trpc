@@ -39,10 +39,12 @@ export default function Container(props: ContainerProps) {
           {children}
         </main>
         <footer className="flex flex-col justify-center items-center max-w-4xl border-gray-200 dark:border-gray-700 mx-auto py-8">
-          <NextLink href="https://github.com/rendiriz/next-trpc" passHref>
-            <a target="_blank" className="hover:underline">
-              Github
-            </a>
+          <NextLink
+            href="https://github.com/rendiriz/next-trpc"
+            target="_blank"
+            className="hover:underline"
+          >
+            Github
           </NextLink>
         </footer>
       </div>

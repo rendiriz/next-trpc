@@ -2,16 +2,8 @@ import React, { Suspense } from 'react';
 import type { NextPage } from 'next';
 import Container from '@/components/Container';
 import PokeCard from '@/components/PokeCard';
-import { trpc } from '@/utils/trpc';
-
-function PokeCardEmpty() {
-  return (
-    <div className="animate-pulse flex flex-col items-center justify-center mt-8">
-      <div className="h-[24px] w-[50%] bg-slate-200 rounded"></div>
-      <div className="h-[24px] w-[25%] bg-slate-200 rounded mt-4"></div>
-    </div>
-  );
-}
+import PokeCardEmpty from '@/components/PokeCardEmpty';
+import { api } from '@/utils/api';
 
 const HomePage: NextPage = () => {
   const {
@@ -21,13 +13,10 @@ const HomePage: NextPage = () => {
     hasNextPage,
     isFetchingNextPage,
     status,
-  } = trpc.useInfiniteQuery(
-    [
-      'pokemon.list',
-      {
-        limit: 6,
-      },
-    ],
+  } = api.pokemon.list.useInfiniteQuery(
+    {
+      limit: 6,
+    },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },

@@ -1,7 +1,7 @@
-import * as trpc from '@trpc/server';
-import { createRouter } from './context';
 import { z } from 'zod';
 import { Prisma } from '@prisma/client';
+
+import { createTRPCRouter, publicProcedure, protectedProcedure } from '../trpc';
 
 const Pokemon = z.object({
   id: z.number(),
@@ -15,34 +15,15 @@ const Pokemons = z.array(Pokemon);
 export type Pokemon = z.infer<typeof Pokemon>;
 export type Pokemons = z.infer<typeof Pokemons>;
 
-export const pokemonRouter = createRouter()
-  .query('getById', {
-    input: z.number(),
-    output: Pokemon,
-    async resolve(req) {
-      const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${req.input}`);
-      const data = await res.json();
-
-      if (!data) {
-        throw new trpc.TRPCError({
-          code: 'BAD_REQUEST',
-          message: `could not find pokemon with id ${req.input}`,
-        });
-      }
-
-      return {
-        id: data.id,
-        name: data.name,
-        image: data.sprites.other.dream_world.front_default,
-      };
-    },
-  })
-  .query('list', {
-    input: z.object({
-      limit: z.number().min(1).max(100).nullish(),
-      cursor: z.number().nullish(),
-    }),
-    async resolve({ ctx, input }) {
+export const pokemonRouter = createTRPCRouter({
+  list: publicProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.number().nullish(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
       const limit = input.limit ?? 50;
       const { cursor } = input;
 
@@ -85,26 +66,18 @@ export const pokemonRouter = createRouter()
         items,
         nextCursor,
       };
-    },
-  })
-  .middleware(async ({ ctx, next }) => {
-    if (!ctx.session) {
-      throw new trpc.TRPCError({ code: 'UNAUTHORIZED' });
-    }
-
-    return next();
-  })
-  .query('rate', {
-    input: z.object({
-      limit: z.number().min(1).max(100).nullish(),
-      cursor: z.number().nullish(),
     }),
-    async resolve({ ctx, input }) {
+
+  rate: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.number().nullish(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
       const limit = input.limit ?? 50;
       const { cursor } = input;
-
-      console.log(ctx.session);
-      console.log((ctx.session?.user as any).id);
 
       let userId: string = '';
       if (ctx.session) {
@@ -144,14 +117,16 @@ export const pokemonRouter = createRouter()
         items,
         nextCursor,
       };
-    },
-  })
-  .mutation('upsert', {
-    input: z.object({
-      pokemonId: z.number(),
-      rate: z.number(),
     }),
-    async resolve({ ctx, input }) {
+
+  upsert: protectedProcedure
+    .input(
+      z.object({
+        pokemonId: z.number(),
+        rate: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
       const userId = (ctx.session?.user as any).id;
 
       const pokemonRate = await ctx.prisma.pokemonRate.findFirst({
@@ -181,5 +156,5 @@ export const pokemonRouter = createRouter()
       }
 
       return result;
-    },
-  });
+    }),
+});
