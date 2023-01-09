@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import type { NextPage } from 'next';
 import Container from '@/components/Container';
 import PokeCard from '@/components/PokeCard';
-import { trpc } from '@/utils/trpc';
+import { api } from '@/utils/api';
 
 function PokeCardEmpty() {
   return (
@@ -21,13 +21,10 @@ const HomePage: NextPage = () => {
     hasNextPage,
     isFetchingNextPage,
     status,
-  } = trpc.useInfiniteQuery(
-    [
-      'pokemon.list',
-      {
-        limit: 6,
-      },
-    ],
+  } = api.pokemon.list.useInfiniteQuery(
+    {
+      limit: 6,
+    },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },

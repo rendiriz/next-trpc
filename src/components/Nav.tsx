@@ -69,39 +69,37 @@ const Nav = () => {
           <div className="flex space-x-2 md:space-x-4 items-center">
             <div className="flex space-x-2">
               {!session && (
-                <NextLink href="/api/auth/signin/github">
-                  <a
-                    className={cn(
-                      'font-normal text-gray-600 dark:text-gray-400',
-                      'flex space-x-2 font-medium py-4 px-2',
-                    )}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      signIn('github', {
-                        callbackUrl: `${window.location.origin}`,
-                      });
-                    }}
-                  >
-                    <span className="capsize">Login</span>
-                  </a>
+                <NextLink
+                  href="/api/auth/signin/github"
+                  className={cn(
+                    'font-normal text-gray-600 dark:text-gray-400',
+                    'flex space-x-2 font-medium py-4 px-2',
+                  )}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    signIn('github', {
+                      callbackUrl: `${window.location.origin}`,
+                    });
+                  }}
+                >
+                  <span className="capsize">Login</span>
                 </NextLink>
               )}
               {session && (
-                <NextLink href="/">
-                  <a
-                    className={cn(
-                      'font-normal text-gray-600 dark:text-gray-400',
-                      'flex space-x-2 font-medium py-4 px-2',
-                    )}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      signOut({
-                        callbackUrl: `${window.location.origin}`,
-                      });
-                    }}
-                  >
-                    <span className="capsize">Logout</span>
-                  </a>
+                <NextLink
+                  href="/"
+                  className={cn(
+                    'font-normal text-gray-600 dark:text-gray-400',
+                    'flex space-x-2 font-medium py-4 px-2',
+                  )}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    signOut({
+                      callbackUrl: `${window.location.origin}`,
+                    });
+                  }}
+                >
+                  <span className="capsize">Logout</span>
                 </NextLink>
               )}
               <ThemeSwitcher />
