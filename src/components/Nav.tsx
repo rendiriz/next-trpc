@@ -69,38 +69,36 @@ const Nav = () => {
           <div className="flex space-x-2 md:space-x-4 items-center">
             <div className="flex space-x-2">
               {!session && (
-                <NextLink
-                  href="/api/auth/signin/github"
+                // eslint-disable-next-line @next/next/no-html-link-for-pages
+                <a
+                  href="/api/auth/signin"
                   className={cn(
                     'font-normal text-gray-600 dark:text-gray-400',
                     'flex space-x-2 font-medium py-4 px-2',
                   )}
                   onClick={(e) => {
                     e.preventDefault();
-                    signIn('github', {
-                      callbackUrl: `${window.location.origin}`,
-                    });
+                    signIn();
                   }}
                 >
                   <span className="capsize">Login</span>
-                </NextLink>
+                </a>
               )}
               {session && (
-                <NextLink
-                  href="/"
+                // eslint-disable-next-line @next/next/no-html-link-for-pages
+                <a
+                  href="/api/auth/signout"
                   className={cn(
                     'font-normal text-gray-600 dark:text-gray-400',
                     'flex space-x-2 font-medium py-4 px-2',
                   )}
                   onClick={(e) => {
                     e.preventDefault();
-                    signOut({
-                      callbackUrl: `${window.location.origin}`,
-                    });
+                    signOut();
                   }}
                 >
                   <span className="capsize">Logout</span>
-                </NextLink>
+                </a>
               )}
               <ThemeSwitcher />
             </div>
