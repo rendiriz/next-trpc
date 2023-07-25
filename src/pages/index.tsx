@@ -1,11 +1,25 @@
-import React, { Suspense } from 'react';
+import React, { ChangeEvent, Fragment, Suspense, useState } from 'react';
 import type { NextPage } from 'next';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import Container from '@/components/Container';
 import PokeCard from '@/components/PokeCard';
 import PokeCardEmpty from '@/components/PokeCardEmpty';
 import { api } from '@/utils/api';
+import { useDebounce } from '@/hooks/useDebounce';
 
 const HomePage: NextPage = () => {
+  const [search, setSearch] = useState('');
+  const [sort, setSort] = useState('highest-score');
+
+  const debouncedValue = useDebounce(search, 500);
+
   const {
     data: pokemons,
     error,
@@ -15,18 +29,41 @@ const HomePage: NextPage = () => {
     status,
   } = api.pokemon.list.useInfiniteQuery(
     {
-      limit: 6,
+      search: debouncedValue,
+      sort,
     },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },
   );
 
+  const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.target.value);
+  };
+
+  const handleSort = (value: string) => {
+    setSort(value);
+  };
+
   return (
     <Suspense fallback={null}>
       <Container>
         <div className="mx-auto max-w-4xl border-gray-200 px-6 pt-12 pb-48 dark:border-gray-700">
-          <h1 className="text-center text-4xl">Pokemon</h1>
+          <h1 className="mb-8 text-center text-4xl">Pokemon</h1>
+
+          <div className="flex gap-4">
+            <Input type="text" placeholder="Search" onChange={handleSearch} />
+            <Select value={sort} onValueChange={handleSort}>
+              <SelectTrigger className="w-[240px] bg-background">
+                <SelectValue placeholder="Sort" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="name">Name</SelectItem>
+                <SelectItem value="highest-score">Highest Score</SelectItem>
+                <SelectItem value="most-vote">Most Vote</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
           {status === 'loading' ? (
             <PokeCardEmpty />
@@ -38,11 +75,11 @@ const HomePage: NextPage = () => {
             <>
               <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                 {pokemons?.pages.map((group, i) => (
-                  <React.Fragment key={i}>
+                  <Fragment key={i}>
                     {group.items.map((pokemon) => (
                       <PokeCard key={pokemon.id} {...pokemon} />
                     ))}
-                  </React.Fragment>
+                  </Fragment>
                 ))}
               </div>
               <div className="mt-12">

@@ -19,22 +19,51 @@ export const pokemonRouter = createTRPCRouter({
   list: publicProcedure
     .input(
       z.object({
-        limit: z.number().min(1).max(100).nullish(),
+        search: z.string(),
+        sort: z.string(),
         cursor: z.number().nullish(),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const limit = input.limit ?? 50;
-      const { cursor } = input;
+      const { search, sort, cursor } = input;
 
-      const items = await ctx.prisma.$queryRaw<Pokemons>(
-        Prisma.sql`
+      const page = cursor ? cursor : 0;
+      const limit = 6;
+      const offset = limit * (page + 1) - limit;
+
+      let order;
+      switch (sort) {
+        case 'name':
+          order = 't.name ASC';
+          break;
+        case 'highest-score':
+          order = 'rate DESC, name ASC';
+          break;
+        case 'most-vote':
+          order = 'vote DESC, name ASC';
+          break;
+        default:
+          break;
+      }
+
+      const totalItems = await ctx.prisma.pokemon.count({
+        where: {
+          name: {
+            endsWith: search,
+            mode: 'insensitive',
+          },
+        },
+      });
+      const totalPages = Math.ceil(totalItems / limit);
+
+      const items = await ctx.prisma.$queryRawUnsafe<Pokemons>(
+        `
           SELECT 
-            "Table".id,
-            "Table".name,
-            "Table".image,
-            COALESCE("Table"."rate", 0) as rate,
-            COALESCE("Table"."vote", 0) as vote
+            t.id,
+            t.name,
+            t.image,
+            COALESCE(t.rate, 0) as rate,
+            COALESCE(t.vote, 0) as vote
           FROM (
             SELECT 
               p.*,
@@ -50,21 +79,22 @@ export const pokemonRouter = createTRPCRouter({
               ) as vote
             FROM "Pokemon" AS p
             ORDER BY p."id" ASC 
-          ) as "Table"
-          WHERE "Table".id >= ${cursor ? cursor : 0}
-          LIMIT ${limit + 1} 
+          ) as t
+          ${search ? `WHERE t.name ILIKE $1` : ''}
+          ORDER BY ${order}
+          OFFSET $2
+          LIMIT $3
         `,
+        `%${search}%`,
+        offset,
+        limit,
       );
 
-      let nextCursor: typeof cursor | null = null;
-      if (items.length > limit) {
-        const nextItem = items.pop();
-        nextCursor = nextItem!.id;
-      }
+      const nextCursor = page + 1;
 
       return {
         items,
-        nextCursor,
+        nextCursor: nextCursor < totalPages ? nextCursor : undefined,
       };
     }),
 

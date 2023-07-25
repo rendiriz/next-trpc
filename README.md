@@ -2,8 +2,8 @@
 
 ## Todo
 
-- [ ] Search for a pokemon
-- [ ] Sort by name & rate
+- [x] Search for a pokemon
+- [x] Sort by name & rate
 - [ ] Dashboard page
 - [ ] Seed more pokemon
 
