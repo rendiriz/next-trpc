@@ -35,10 +35,10 @@ export default function Container(props: ContainerProps) {
       />
       <div className="bg-gray-50 dark:bg-gray-900">
         <Nav />
-        <main id="skip" className="bg-gray-50 dark:bg-gray-900 mt-[72px]">
+        <main id="skip" className="mt-[72px] bg-gray-50 dark:bg-gray-900">
           {children}
         </main>
-        <footer className="flex flex-col justify-center items-center max-w-4xl border-gray-200 dark:border-gray-700 mx-auto py-8">
+        <footer className="mx-auto flex max-w-4xl flex-col items-center justify-center border-gray-200 py-8 dark:border-gray-700">
           <NextLink
             href="https://github.com/rendiriz/next-trpc"
             target="_blank"

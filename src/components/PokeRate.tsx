@@ -22,7 +22,7 @@ export default function PokeRate(pokemon: any) {
     <>
       <PokeCard {...pokemon} />
       {session && (
-        <div className="mt-2 text-3xl text-center">
+        <div className="mt-2 text-center text-3xl">
           <Rate
             className="!text-3xl"
             count={5}

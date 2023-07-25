@@ -18,9 +18,9 @@ const NavItemMobile = (props: INavItemMobile) => {
       href={props.href}
       className={cn(
         isActive
-          ? 'bg-gray-100/90 dark:bg-gray-800/90 text-gray-800 dark:text-gray-200'
+          ? 'bg-gray-100/90 text-gray-800 dark:bg-gray-800/90 dark:text-gray-200'
           : 'text-gray-600 dark:text-gray-400',
-        'flex space-x-2 font-medium py-4 px-6',
+        'flex space-x-2 py-4 px-6 font-medium',
         props.className,
       )}
       aria-current={isActive ? 'page' : undefined}

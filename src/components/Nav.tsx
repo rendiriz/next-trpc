@@ -19,7 +19,7 @@ const Nav = () => {
     >
       <nav
         className={cn(
-          'w-full fixed top-0 z-50',
+          'fixed top-0 z-50 w-full',
           'border-b border-solid border-gray-300 dark:border-gray-600',
         )}
       >
@@ -27,7 +27,7 @@ const Nav = () => {
           className={cn(
             'mx-auto max-w-4xl px-4',
             'relative flex flex-wrap items-center justify-between py-2',
-            'bg-gray-50/90 dark:bg-gray-900/90 text-gray-800 dark:text-gray-50',
+            'bg-gray-50/90 text-gray-800 dark:bg-gray-900/90 dark:text-gray-50',
           )}
         >
           <div className="flex items-center">
@@ -43,7 +43,7 @@ const Nav = () => {
                 type="button"
                 className={cn(
                   'text-stone-800 dark:text-stone-50',
-                  'sm:hidden inline-flex items-center justify-center rounded-md p-2',
+                  'inline-flex items-center justify-center rounded-md p-2 sm:hidden',
                 )}
               >
                 <svg
@@ -66,7 +66,7 @@ const Nav = () => {
               </button>
             </Collapsible.Trigger>
           </div>
-          <div className="flex space-x-2 md:space-x-4 items-center">
+          <div className="flex items-center space-x-2 md:space-x-4">
             <div className="flex space-x-2">
               {!session && (
                 // eslint-disable-next-line @next/next/no-html-link-for-pages
@@ -74,7 +74,7 @@ const Nav = () => {
                   href="/api/auth/signin"
                   className={cn(
                     'font-normal text-gray-600 dark:text-gray-400',
-                    'flex space-x-2 font-medium py-4 px-2',
+                    'flex space-x-2 py-4 px-2 font-medium',
                   )}
                   onClick={(e) => {
                     e.preventDefault();
@@ -90,7 +90,7 @@ const Nav = () => {
                   href="/api/auth/signout"
                   className={cn(
                     'font-normal text-gray-600 dark:text-gray-400',
-                    'flex space-x-2 font-medium py-4 px-2',
+                    'flex space-x-2 py-4 px-2 font-medium',
                   )}
                   onClick={(e) => {
                     e.preventDefault();
@@ -112,7 +112,7 @@ const Nav = () => {
             'block sm:hidden',
             'bg-gray-50/90 dark:bg-gray-900/90',
             'border-b border-gray-300 dark:border-gray-600',
-            'w-full fixed top-[66px] z-50 mt-[1px]',
+            'fixed top-[66px] z-50 mt-[1px] w-full',
           )}
         >
           <div className="flex flex-col">

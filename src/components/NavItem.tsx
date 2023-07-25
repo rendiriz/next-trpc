@@ -20,7 +20,7 @@ const NavItem = (props: INavItem) => {
         isActive
           ? 'text-gray-800 dark:text-gray-200'
           : 'text-gray-600 dark:text-gray-400',
-        'flex space-x-2 font-medium py-4 px-2',
+        'flex space-x-2 py-4 px-2 font-medium',
         props.className,
       )}
       aria-current={isActive ? 'page' : undefined}

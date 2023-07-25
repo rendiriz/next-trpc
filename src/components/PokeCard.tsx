@@ -1,4 +1,4 @@
-import Image from "next/legacy/image";
+import Image from 'next/legacy/image';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import Rate from 'rc-rate';
@@ -27,11 +27,11 @@ export default function PokeCard({
     <div className="text-center">
       <div
         className={cn(
-          !session || router.pathname === '/' ? 'pt-8 pb-4 px-8' : 'p-8',
+          !session || router.pathname === '/' ? 'px-8 pt-8 pb-4' : 'p-8',
           'mt-6 rounded-xl border-2 border-gray-300 dark:border-gray-600',
         )}
       >
-        <div className="relative flex flex-col items-center justify-center h-full gap-6">
+        <div className="relative flex h-full flex-col items-center justify-center gap-6">
           <Image src={image} alt={name} width={160} height={160} />
           {(!session || router.pathname === '/') && (
             <div className="flex items-center">
