@@ -1,27 +1,37 @@
-import { z } from 'zod';
+import {
+  Output,
+  array,
+  maxRange,
+  minRange,
+  nullish,
+  number,
+  object,
+  optional,
+  string,
+} from 'valibot';
 import { Prisma } from '@prisma/client';
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '../trpc';
 
-const Pokemon = z.object({
-  id: z.number(),
-  name: z.string(),
-  image: z.string(),
-  rate: z.number().optional(),
-  vote: z.number().optional(),
+const Pokemon = object({
+  id: number(),
+  name: string(),
+  image: string(),
+  rate: optional(number()),
+  vote: optional(number()),
 });
-const Pokemons = z.array(Pokemon);
+const Pokemons = array(Pokemon);
 
-export type Pokemon = z.infer<typeof Pokemon>;
-export type Pokemons = z.infer<typeof Pokemons>;
+export type Pokemon = Output<typeof Pokemon>;
+export type Pokemons = Output<typeof Pokemons>;
 
 export const pokemonRouter = createTRPCRouter({
   list: publicProcedure
     .input(
-      z.object({
-        search: z.string(),
-        sort: z.string(),
-        cursor: z.number().nullish(),
+      object({
+        search: string(),
+        sort: string(),
+        cursor: nullish(number()),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -100,9 +110,9 @@ export const pokemonRouter = createTRPCRouter({
 
   rate: protectedProcedure
     .input(
-      z.object({
-        limit: z.number().min(1).max(100).nullish(),
-        cursor: z.number().nullish(),
+      object({
+        limit: nullish(number([minRange(1), maxRange(100)])),
+        cursor: nullish(number()),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -151,9 +161,9 @@ export const pokemonRouter = createTRPCRouter({
 
   upsert: protectedProcedure
     .input(
-      z.object({
-        pokemonId: z.number(),
-        rate: z.number(),
+      object({
+        pokemonId: number(),
+        rate: number(),
       }),
     )
     .mutation(async ({ ctx, input }) => {

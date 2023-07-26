@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import type { NextPage } from 'next';
-import { unstable_getServerSession } from 'next-auth/next';
+import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import Container from '@/components/Container';
 import PokeRate from '@/components/PokeRate';
@@ -70,27 +70,23 @@ const RatePage: NextPage = () => {
   );
 };
 
-// export async function getServerSideProps(context: any) {
-//   const session = await unstable_getServerSession(
-//     context.req,
-//     context.res,
-//     authOptions,
-//   );
+export async function getServerSideProps(context: any) {
+  const session = await getServerSession(context.req, context.res, authOptions);
 
-//   if (!session) {
-//     return {
-//       redirect: {
-//         destination: '/',
-//         permanent: false,
-//       },
-//     };
-//   }
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
 
-//   return {
-//     props: {
-//       session,
-//     },
-//   };
-// }
+  return {
+    props: {
+      session,
+    },
+  };
+}
 
 export default RatePage;
